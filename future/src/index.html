@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>future</title>
+<meta name="description" content="A small shop for objects that are about to exist. Move the cursor, a spider answers.">
+<style>/*STYLE*/</style>
+</head>
+<body data-room="home">
+<header class="hd">
+  <a class="logo" href="#home" data-web-anchor>future</a>
+  <nav aria-label="Rooms">
+    <a href="#home" data-web-anchor>home</a>
+    <a href="#line" data-web-anchor>the line</a>
+    <a href="#kits" data-web-anchor>kits</a>
+  </nav>
+  <button class="bag-btn" type="button" aria-label="Open bag" aria-haspopup="dialog" data-web-anchor>
+    <svg class="bag-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6L5 8z M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-bag-count>(0)</span>
+  </button>
+</header>
+<main class="rooms">
+  <section class="room room-home is-shown" data-room-id="home" aria-label="home">
+    <div class="frame">
+      <h1 class="wordmark" data-web-anchor><span>f</span><span>u</span><span>t</span><span>u</span><span>r</span><span>e</span></h1>
+      <div class="cut cut-pebble" data-web-anchor data-slot="7"></div>
+      <div class="cut cut-lamp" data-web-anchor data-slot="0"></div>
+      <div class="cut cut-noon" data-web-anchor data-slot="2"></div>
+      <div class="cut cut-stack" data-web-anchor data-slot="3"></div>
+      <div class="cut cut-latch" data-web-anchor data-slot="6" data-stick="bottom"></div>
+      <p class="headline" data-web-anchor>made for<br>next year</p>
+      <p class="tagline" data-web-anchor>A small shop for things that are about to exist.</p>
+    </div>
+    <canvas class="web-layer" aria-hidden="true"></canvas>
+    <div class="frame over" aria-hidden="true"><div class="wordmark"><span>f</span><span>u</span><span>t</span><span class="on">u</span><span>r</span><span>e</span></div></div>
+    <p id="spider-instructions"><span class="hint-fine">Del / Backspace clears the web. Click makes the spider jump.</span><span class="hint-touch">Hold to clear the web<br>Double-tap to make the spider jump</span></p>
+  </section>
+
+  <section class="room room-line" data-room-id="line" aria-label="the line">
+    <div class="ln">
+      <div class="ln-stage" tabindex="0" role="region" aria-label="Six objects in a line. Drag, scroll or use the arrow keys to change object.">
+        <div class="ln-objs"></div>
+        <div class="ln-copy">
+          <h2 class="ln-title">Run 03</h2>
+          <p class="ln-text">Six objects from the third run, in the order they left the workshop. Drag, scroll or press the arrow keys to walk the line forward.</p>
+        </div>
+        <div class="ln-foot">
+          <span class="ln-label">Lot</span>
+          <span class="ln-roll" aria-hidden="true"><span class="ln-roll-track"></span></span>
+          <a class="ln-link" href="#kits">See the kits</a>
+        </div>
+        <p class="sr-only" aria-live="polite" data-live></p>
+      </div>
+      <aside class="ln-rail" aria-label="Pieces"></aside>
+    </div>
+    <div class="wait"></div>
+  </section>
+
+  <section class="room room-kits" data-room-id="kits" aria-label="kits">
+    <div class="kt">
+      <div class="kt-grid">
+        <div class="kt-left">
+          <div class="kt-head">
+            <div>
+              <h2 class="kt-title">Try the kit.</h2>
+              <p class="kt-sub">Six kits, staged on one shelf. Tap a dot to see the piece.</p>
+            </div>
+          </div>
+          <p class="sr-only" aria-live="polite" data-live></p>
+          <div class="kt-stage" data-stage tabindex="0" role="region" aria-roledescription="carousel" aria-label="Try the kit. Use the arrow keys or swipe to change kit.">
+            <div class="kt-actors"></div>
+            <div class="kt-sweep"></div>
+          </div>
+          <div class="kt-controls"></div>
+          <div class="walk" aria-hidden="true"><i></i></div>
+          <div class="lb" role="region" aria-label="View kit" aria-hidden="true">
+            <div class="lb-stage"></div>
+            <div class="lb-top">
+              <p class="lb-title"><span class="lb-kicker"></span><span class="lb-name"></span></p>
+              <button class="lb-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+            </div>
+            <p class="lb-hint">Tap a dot to shop the piece</p>
+          </div>
+        </div>
+        <aside class="kt-panel" aria-label="In this kit">
+          <div class="kt-panel-in">
+            <div class="kt-phead"><h3>In this kit</h3><span class="kt-count">3 pieces</span></div>
+            <div class="kt-mhead"><span class="kt-mname"></span><span class="kt-count">3 pieces</span></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="bag-dialog" aria-labelledby="bag-title">
+  <div class="bd-head"><h2 id="bag-title">Your bag</h2><button class="bd-close" type="button" aria-label="Close bag">×</button></div>
+  <p class="bd-note">A local shortlist. No payment or order is collected here.</p>
+  <div class="bd-list"></div>
+  <p class="bd-total"></p>
+  <button class="bd-copy" type="button">Copy shortlist</button>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>/*SCRIPT*/</script>
+</body>
+</html>
