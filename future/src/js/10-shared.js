@@ -26,10 +26,10 @@ function icon(w, hgt, vb, d, sw, cls) {
   svg.append(svgEl('path', { d, fill: 'none', stroke: 'currentColor', 'stroke-width': sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
   return svg;
 }
-const money = (n) => {
-  const c = Math.round(n * 100);
-  return c % 100 ? (c / 100).toFixed(2) : String(c / 100);
-};
+const NUM = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const MLN = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 });
+const money = (n) => (n >= 1e6 ? `${MLN.format(n / 1e6)}\u00a0млн\u00a0₽` : `${NUM.format(n)}\u00a0₽`);
+const pad2 = (n) => String(n).padStart(2, '0');
 const restart = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
 
 /* ---- The objects sheet: decoded once, trimmed by alpha, shared by every crop ---- */
@@ -149,7 +149,8 @@ const Bag = (() => {
     toast(picks.length > 1 ? COPY.toastKit : COPY.toastOne);
   }
 
-  $('.bag-btn').addEventListener('click', () => { render(); dialog.showModal(); });
+  const open = () => { render(); dialog.showModal(); };
+  $('.bag-btn').addEventListener('click', open);
   $('.bd-close', dialog).addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (e) => {
     const r = dialog.getBoundingClientRect();
@@ -170,7 +171,7 @@ const Bag = (() => {
   });
 
   load(); count();
-  return { add };
+  return { add, open };
 })();
 
 /* ---- Rooms, routing and the wipe ---- */

@@ -12,9 +12,10 @@ function createLine(root) {
   const items = PRODUCTS.slice(0, N).map((p, i) => {
     const el = h('div', { class: 'ln-obj', 'data-i': i }, h('span', { class: 'ln-shadow' }), crop(p.slot, 'xMidYMax meet'));
     objsEl.append(el);
-    return { el, r: aspect(p.slot), f: -1, o: -1, z: null };
+    const r = aspect(p.slot);
+    return { el, r, hs: 1, f: -1, o: -1, z: null };
   });
-  for (let i = 0; i <= N; i++) track.append(h('span', null, String(LINE.FIRST + (i % N))));
+  for (let i = 0; i <= N; i++) track.append(h('span', null, pad2((i % N) + 1)));
 
   const heart = () => icon(20, 20, '0 0 24 24', 'M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z', 1.4);
   const cards = RAIL.flat().map((id) => {
@@ -23,7 +24,7 @@ function createLine(root) {
       h('button', { type: 'button', class: 'ln-heart', 'aria-pressed': 'false', 'aria-label': COPY.like(p.name) }, heart()),
       h('div', { class: 'ln-media' }, crop(p.slot)),
       h('div', { class: 'ln-meta' },
-        h('div', null, h('h3', { class: 'ln-name' }, p.name), h('p', { class: 'ln-price' }, `€${money(p.price)}`)),
+        h('div', null, h('h3', { class: 'ln-name' }, p.name), h('p', { class: 'ln-type' }, p.type), h('p', { class: 'ln-price' }, `от ${money(p.price)}`)),
         h('button', { type: 'button', class: 'ln-plus', 'data-id': p.id, 'aria-label': COPY.addTo(p.name) }, h('i'), h('i'))));
     rail.append(card);
     return card;
@@ -41,6 +42,7 @@ function createLine(root) {
     base = LINE.layout * H;
     stage.style.setProperty('--sh', `${base}px`);
     items.forEach((it) => {
+      it.hs = Math.min(LINE.hsMax, LINE.hsWidth / it.r, LINE.frontW * W / (LINE.KH[1] * H * it.r));
       it.el.style.width = `${base * it.r}px`;
       it.el.style.height = `${base}px`;
       it.f = -1; it.o = -1; it.z = null;
@@ -60,7 +62,7 @@ function createLine(root) {
       if (d > N - 1) d -= N;
       const k = clamp(d + 1, 0, 6), a = Math.floor(k), b = Math.min(6, a + 1), t = k - a;
       const mix = (A) => A[a] + (A[b] - A[a]) * t;
-      const hgt = mix(LINE.KH) * H * HS[i];
+      const hgt = mix(LINE.KH) * H * it.hs;
       const s = hgt / base, w = hgt * it.r;
       const x = mix(LINE.KX) * W - w / 2, y = mix(LINE.KF) * H - hgt;
       it.el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s})`;
@@ -114,7 +116,7 @@ function createLine(root) {
     const i = wrap(Math.round(target), N);
     if (i !== lot) {
       lot = i;
-      live.textContent = COPY.lotLive(LINE.FIRST + i, PRODUCTS[i].name);
+      live.textContent = COPY.lotLive(pad2(i + 1), PRODUCTS[i].name);
     }
     kick();
   }

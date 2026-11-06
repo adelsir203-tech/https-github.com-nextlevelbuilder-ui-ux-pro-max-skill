@@ -1,104 +1,207 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>future</title>
-<meta name="description" content="A small shop for objects that are about to exist. Move the cursor, a spider answers.">
+<title>future company — загородные дома под ключ</title>
+<meta name="description" content="Строим загородные дома под ключ по фиксированной смете. Двигайте курсор — паук ответит.">
 <style>/*STYLE*/</style>
 </head>
 <body data-room="home">
 <header class="hd">
   <a class="logo" href="#home" data-web-anchor>future</a>
-  <nav aria-label="Rooms">
-    <a href="#home" data-web-anchor>home</a>
-    <a href="#line" data-web-anchor>the line</a>
-    <a href="#kits" data-web-anchor>kits</a>
+  <nav aria-label="Разделы">
+    <a href="#home" data-web-anchor>главная</a>
+    <a href="#house" data-web-anchor>дом</a>
+    <a href="#line" data-web-anchor>проекты</a>
+    <a href="#kits" data-web-anchor>участки</a>
+    <a href="#faq" data-web-anchor>вопросы</a>
   </nav>
-  <button class="bag-btn" type="button" aria-label="Open bag" aria-haspopup="dialog" data-web-anchor>
+  <button class="bag-btn" type="button" aria-label="Открыть подборку" aria-haspopup="dialog" data-web-anchor>
     <svg class="bag-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6L5 8z M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-bag-count>(0)</span>
   </button>
 </header>
 <main class="rooms">
-  <section class="room room-home is-shown" data-room-id="home" aria-label="home">
+  <section class="room room-home is-shown" data-room-id="home" aria-label="главная">
     <div class="frame">
       <h1 class="wordmark" data-web-anchor><span>f</span><span>u</span><span>t</span><span>u</span><span>r</span><span>e</span></h1>
-      <div class="cut cut-pebble" data-web-anchor data-slot="7"></div>
-      <div class="cut cut-lamp" data-web-anchor data-slot="0"></div>
-      <div class="cut cut-noon" data-web-anchor data-slot="2"></div>
-      <div class="cut cut-stack" data-web-anchor data-slot="3"></div>
-      <div class="cut cut-latch" data-web-anchor data-slot="6" data-stick="bottom"></div>
-      <p class="headline" data-web-anchor>made for<br>next year</p>
-      <p class="tagline" data-web-anchor>A small shop for things that are about to exist.</p>
+      <div class="cut cut-a" data-web-anchor data-slot="7"></div>
+      <div class="cut cut-b" data-web-anchor data-slot="3"></div>
+      <div class="cut cut-c" data-web-anchor data-slot="0"></div>
+      <div class="cut cut-d" data-web-anchor data-slot="6"></div>
+      <div class="cut cut-e" data-web-anchor data-slot="4" data-stick="bottom"></div>
+      <p class="headline" data-web-anchor>дома на<br>сто лет вперёд</p>
+      <p class="tagline" data-web-anchor>Строим загородные дома под ключ. Цена фиксируется в&nbsp;договоре.</p>
     </div>
     <canvas class="web-layer" aria-hidden="true"></canvas>
     <div class="frame over" aria-hidden="true"><div class="wordmark"><span>f</span><span>u</span><span>t</span><span class="on">u</span><span>r</span><span>e</span></div></div>
-    <p id="spider-instructions"><span class="hint-fine">Del / Backspace clears the web. Click makes the spider jump.</span><span class="hint-touch">Hold to clear the web<br>Double-tap to make the spider jump</span></p>
+    <p id="spider-instructions"><span class="hint-fine">Del / Backspace убирает паутину. Клик — паук прыгает.</span><span class="hint-touch">Удерживайте, чтобы убрать паутину<br>Двойной тап — паук прыгает</span></p>
   </section>
 
-  <section class="room room-line" data-room-id="line" aria-label="the line">
+  <section class="room room-house" data-room-id="house" aria-label="дом">
+    <div class="hs">
+      <div class="hs-layer hs-sky">
+        <img alt="" src="%SKY_M%">
+        <img class="hs-sky-n" alt="" src="%SKY_N%">
+      </div>
+      <div class="hs-layer hs-home">
+        <div class="hs-set">
+          <div class="hs-layer hs-ground"><picture><source media="(max-aspect-ratio: 3/4)" srcset="%FULL_M_T%"><img alt="" src="%FULL_M%"></picture></div>
+          <picture><source media="(max-aspect-ratio: 3/4)" srcset="%CUT_M_T%"><img class="hs-cut" alt="Барнхаус с панорамным остеклением утром" src="%CUT_M%"></picture>
+        </div>
+        <div class="hs-set is-on">
+          <div class="hs-layer hs-ground"><picture><source media="(max-aspect-ratio: 3/4)" srcset="%FULL_N_T%"><img alt="" src="%FULL_N%"></picture></div>
+          <picture><source media="(max-aspect-ratio: 3/4)" srcset="%CUT_N_T%"><img class="hs-cut" alt="Тот же дом вечером, с тёплым светом в окнах" src="%CUT_N%"></picture>
+        </div>
+      </div>
+      <div class="hs-tilt"></div>
+      <canvas class="hs-fog" aria-hidden="true"></canvas>
+      <div class="hs-ui">
+        <h2 class="hs-title"><span class="l1">Дом под ключ</span><span><i>за</i> <span class="y">120 дней</span></span></h2>
+        <a class="hs-cta" href="#faq">Рассчитать стоимость</a>
+        <div class="hs-dock">
+          <div class="hs-toggle" role="group" aria-label="Время суток">
+            <button type="button" aria-pressed="false"><b>Утро</b><small>окна на восток</small></button>
+            <button type="button" aria-pressed="true"><b>Вечер</b><small>свет на террасе</small></button>
+          </div>
+          <p class="hs-cap">Фиксированная смета, оплата в пять этапов и 10 лет гарантии на&nbsp;конструктив.<br> Цена в договоре не меняется после подписания.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="room room-line" data-room-id="line" aria-label="проекты">
     <div class="ln">
-      <div class="ln-stage" tabindex="0" role="region" aria-label="Six objects in a line. Drag, scroll or use the arrow keys to change object.">
+      <div class="ln-stage" tabindex="0" role="region" aria-label="Шесть проектов в ряд. Перетащите, прокрутите или используйте стрелки, чтобы сменить проект.">
         <div class="ln-objs"></div>
         <div class="ln-copy">
-          <h2 class="ln-title">Run 03</h2>
-          <p class="ln-text">Six objects from the third run, in the order they left the workshop. Drag, scroll or press the arrow keys to walk the line forward.</p>
+          <h2 class="ln-title">Шесть проектов</h2>
+          <p class="ln-text">Шесть домов, которые мы строим чаще всего. Перетащите, прокрутите или нажмите стрелки, чтобы пройти по&nbsp;улице.</p>
         </div>
         <div class="ln-foot">
-          <span class="ln-label">Lot</span>
+          <span class="ln-label">Проект</span>
           <span class="ln-roll" aria-hidden="true"><span class="ln-roll-track"></span></span>
-          <a class="ln-link" href="#kits">See the kits</a>
+          <a class="ln-link" href="#kits">Собрать участок</a>
         </div>
         <p class="sr-only" aria-live="polite" data-live></p>
       </div>
-      <aside class="ln-rail" aria-label="Pieces"></aside>
+      <aside class="ln-rail" aria-label="Дома и постройки"></aside>
     </div>
     <div class="wait"></div>
   </section>
 
-  <section class="room room-kits" data-room-id="kits" aria-label="kits">
+  <section class="room room-kits" data-room-id="kits" aria-label="участки">
     <div class="kt">
       <div class="kt-grid">
         <div class="kt-left">
           <div class="kt-head">
             <div>
-              <h2 class="kt-title">Try the kit.</h2>
-              <p class="kt-sub">Six kits, staged on one shelf. Tap a dot to see the piece.</p>
+              <h2 class="kt-title">Соберите участок.</h2>
+              <p class="kt-sub">Шесть готовых участков: дом, баня и беседка. Нажмите на точку, чтобы увидеть постройку.</p>
             </div>
           </div>
           <p class="sr-only" aria-live="polite" data-live></p>
-          <div class="kt-stage" data-stage tabindex="0" role="region" aria-roledescription="carousel" aria-label="Try the kit. Use the arrow keys or swipe to change kit.">
+          <div class="kt-stage" data-stage tabindex="0" role="region" aria-roledescription="карусель" aria-label="Соберите участок. Стрелки или свайп меняют участок.">
             <div class="kt-actors"></div>
             <div class="kt-sweep"></div>
           </div>
           <div class="kt-controls"></div>
           <div class="walk" aria-hidden="true"><i></i></div>
-          <div class="lb" role="region" aria-label="View kit" aria-hidden="true">
+          <div class="lb" role="region" aria-label="Участок крупно" aria-hidden="true">
             <div class="lb-stage"></div>
             <div class="lb-top">
               <p class="lb-title"><span class="lb-kicker"></span><span class="lb-name"></span></p>
-              <button class="lb-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+              <button class="lb-close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
             </div>
-            <p class="lb-hint">Tap a dot to shop the piece</p>
+            <p class="lb-hint">Нажмите на точку, чтобы выбрать постройку</p>
           </div>
         </div>
-        <aside class="kt-panel" aria-label="In this kit">
+        <aside class="kt-panel" aria-label="На участке">
           <div class="kt-panel-in">
-            <div class="kt-phead"><h3>In this kit</h3><span class="kt-count">3 pieces</span></div>
-            <div class="kt-mhead"><span class="kt-mname"></span><span class="kt-count">3 pieces</span></div>
+            <div class="kt-phead"><h3>На участке</h3><span class="kt-count">3 постройки</span></div>
+            <div class="kt-mhead"><span class="kt-mname"></span><span class="kt-count">3 постройки</span></div>
           </div>
         </aside>
       </div>
     </div>
   </section>
+
+  <section class="room room-faq" data-room-id="faq" aria-label="вопросы">
+    <div class="fq">
+      <section class="fq-block" aria-labelledby="fq-steps">
+        <h2 id="fq-steps" class="fq-h">Как мы строим</h2>
+        <p class="fq-lead">Пять этапов. У каждого свой срок, своя строка в смете и фотоотчёт.</p>
+        <ol class="fq-steps">
+          <li><span class="fq-n">01</span><h3>Встреча и смета</h3><span class="fq-t">3 дня</span><p>Обсуждаем участок, бюджет и проект. Отдаём смету с ценой каждого этапа.</p></li>
+          <li><span class="fq-n">02</span><h3>Проект и договор</h3><span class="fq-t">2 недели</span><p>Адаптируем проект под участок и фиксируем цену и сроки в договоре.</p></li>
+          <li><span class="fq-n">03</span><h3>Фундамент</h3><span class="fq-t">2 недели</span><p>Геология, сваи или плита, вводы воды и электричества.</p></li>
+          <li><span class="fq-n">04</span><h3>Коробка и кровля</h3><span class="fq-t">6 недель</span><p>Стены, перекрытия, кровля и окна. Дом закрыт от погоды.</p></li>
+          <li><span class="fq-n">05</span><h3>Инженерия и отделка</h3><span class="fq-t">8 недель</span><p>Отопление, электрика, вода и отделка. Сдаём дом с актом и гарантией.</p></li>
+        </ol>
+        <p class="fq-total">Около 120 дней от договора до ключей.</p>
+      </section>
+
+      <section class="fq-block" aria-labelledby="fq-price">
+        <h2 id="fq-price" class="fq-h">Что входит в цену</h2>
+        <div class="fq-scroll">
+          <table class="fq-table">
+            <thead><tr><th scope="col"><span class="sr-only">Работы</span></th><th scope="col">Коробка</th><th scope="col">Тёплый контур</th><th scope="col">Под ключ</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Фундамент</th><td data-y>входит</td><td data-y>входит</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Стены и перекрытия</th><td data-y>входит</td><td data-y>входит</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Кровля</th><td data-y>входит</td><td data-y>входит</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Окна и двери</th><td>—</td><td data-y>входит</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Утепление и фасад</th><td>—</td><td data-y>входит</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Отопление, вода, электрика</th><td>—</td><td>—</td><td data-y>входит</td></tr>
+              <tr><th scope="row">Внутренняя отделка</th><td>—</td><td>—</td><td data-y>входит</td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row">Цена за м²</th><td>от 32&nbsp;000&nbsp;₽</td><td>от 48&nbsp;000&nbsp;₽</td><td>от 68&nbsp;000&nbsp;₽</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <section class="fq-block" aria-labelledby="fq-g">
+        <h2 id="fq-g" class="fq-h">Гарантии</h2>
+        <dl class="fq-g">
+          <div><dt>10 лет</dt><dd>на фундамент, стены и кровлю</dd></div>
+          <div><dt>2 года</dt><dd>на инженерные системы и отделку</dd></div>
+          <div><dt>5 платежей</dt><dd>оплата по этапам, без предоплаты за весь дом</dd></div>
+          <div><dt>Каждую пятницу</dt><dd>фото- и видеоотчёт со стройки</dd></div>
+        </dl>
+      </section>
+
+      <section class="fq-block" aria-labelledby="fq-q">
+        <h2 id="fq-q" class="fq-h">Вопросы</h2>
+        <div class="fq-list">
+          <details><summary>Сколько стоит дом под ключ?</summary><p>От 68&nbsp;000&nbsp;₽ за квадратный метр. Точную цену считаем по проекту и участку, после этого она фиксируется в договоре.</p></details>
+          <details><summary>Вы строите зимой?</summary><p>Да. Каркасные дома и фундаменты на сваях строим круглый год, бетонные работы зимой ведём с прогревом.</p></details>
+          <details><summary>Можно построить по своему проекту?</summary><p>Да. Пересчитаем его под наши технологии и отдадим смету за пять рабочих дней.</p></details>
+          <details><summary>Вы работаете с ипотекой?</summary><p>Да, с аккредитованными банками. Помогаем собрать документы на строительство ИЖС.</p></details>
+          <details><summary>Где вы строите?</summary><p>В пределах 150 км от города. Дальше считаем доставку отдельно.</p></details>
+          <details><summary>Что делать, если на участке нет коммуникаций?</summary><p>Сделаем скважину, септик и ввод электричества. В смете это отдельные строки.</p></details>
+          <details><summary>Как вы проверяете качество?</summary><p>У каждого дома свой инженер технадзора. Он подписывает акт по каждому этапу до оплаты.</p></details>
+          <details><summary>Может ли цена вырасти после договора?</summary><p>Нет. Цена меняется, только если вы сами меняете проект, и это оформляется допсоглашением.</p></details>
+        </div>
+      </section>
+
+      <section class="fq-block fq-end" aria-labelledby="fq-end">
+        <h2 id="fq-end" class="fq-h">Обсудим ваш дом</h2>
+        <p class="fq-lead">Соберите подборку из проектов и участков. С ней разговор займёт пятнадцать минут.</p>
+        <div class="fq-actions">
+          <button class="fq-btn" type="button" data-open-bag>Открыть подборку</button>
+          <a class="fq-link" href="#line">Смотреть проекты</a>
+        </div>
+      </section>
+    </div>
+  </section>
 </main>
 
 <dialog id="bag-dialog" aria-labelledby="bag-title">
-  <div class="bd-head"><h2 id="bag-title">Your bag</h2><button class="bd-close" type="button" aria-label="Close bag">×</button></div>
-  <p class="bd-note">A local shortlist. No payment or order is collected here.</p>
+  <div class="bd-head"><h2 id="bag-title">Ваша подборка</h2><button class="bd-close" type="button" aria-label="Закрыть">×</button></div>
+  <p class="bd-note">Подборка хранится только в этом браузере. Оплата на сайте не принимается.</p>
   <div class="bd-list"></div>
   <p class="bd-total"></p>
-  <button class="bd-copy" type="button">Copy shortlist</button>
+  <button class="bd-copy" type="button">Скопировать подборку</button>
 </dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>/*SCRIPT*/</script>

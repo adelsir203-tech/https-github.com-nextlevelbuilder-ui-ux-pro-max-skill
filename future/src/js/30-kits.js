@@ -25,9 +25,9 @@ function createKits(root) {
     const fig = h('div', { class: 'fig' });
     kit.pieces.forEach((id, j) => {
       const p = PRODUCT[id];
-      const hp = kit.heights[j];
+      const hp = FIG.heights[j];
       const wp = hp * aspect(p.slot) / FIG.aspect;
-      fig.append(h('div', { class: 'piece', style: `left:${FIG.cx[j] - wp / 2}%;width:${wp}%;height:${hp}%;--sh:calc(var(--model-h) * ${hp / 100})` },
+      fig.append(h('div', { class: 'piece', style: `left:${FIG.cx[j] - wp / 2}%;bottom:${100 - FIG.floor[j]}%;width:${wp}%;height:${hp}%;z-index:${FIG.z[j]};--sh:calc(var(--model-h) * ${hp / 100})` },
         h('span', { class: 'pshadow' }), crop(p.slot, 'xMidYMax meet')));
     });
     return fig;
@@ -83,7 +83,7 @@ function createKits(root) {
       h('button', { type: 'button', class: 'confirm' }, COPY.confirm, h('span', { class: 'sr-only' }, ` ${p.name}`)));
     const row = h('li', { class: 'row', 'data-card': j + 1, style: `--i:${j + 1}` },
       h('a', { class: 'media', href: '#line', 'aria-hidden': 'true', tabindex: '-1' }, h('span', { class: 'mi' }, crop(p.slot)), h('span', { class: 'num' }, String(j + 1))),
-      h('div', { class: 'info' }, h('span', { class: 'type' }, p.type), h('a', { class: 'name', href: '#line' }, p.name), h('span', { class: 'price' }, `€${money(p.price)}`)),
+      h('div', { class: 'info' }, h('span', { class: 'type' }, p.type), h('a', { class: 'name', href: '#line' }, p.name), h('span', { class: 'price' }, `от ${money(p.price)}`)),
       add, picker);
     return { k, j, p, row, add, picker, touched: false, added: false, loading: false, option: () => $('input:checked', picker).value };
   }
@@ -100,7 +100,7 @@ function createKits(root) {
       h('div', { class: 'kt-bundle' }, msg,
         h('div', { class: 'kt-brow' },
           h('div', null, h('strong', null, COPY.bundleTitle), h('span', { class: 'kt-note' }, COPY.bundleNote)),
-          h('div', { class: 'kt-sum' }, h('s', null, `€${money(sum)}`), h('strong', null, `€${money(bundle)}`))),
+          h('div', { class: 'kt-sum' }, h('s', null, money(sum)), h('strong', null, money(bundle)))),
         cta));
     panelIn.append(el);
     return { el, list, msg, cta, cards, complete: false, loading: false };
@@ -141,7 +141,8 @@ function createKits(root) {
     }
     kt.style.setProperty('--frame-h', `${frameH}px`);
     W = stage.clientWidth; H = stage.clientHeight;
-    const modelH = Math.max(RING.modelMin, Math.round((H - RING.floorPad - RING.headPad) / RING.fs));
+    let modelH = Math.max(RING.modelMin, Math.round((H - RING.floorPad - RING.headPad) / RING.fs));
+    if (mobile) modelH = Math.min(modelH, Math.round(W * FIG.phoneFit / FIG.aspect));
     stage.style.setProperty('--model-h', `${modelH}px`);
     bodyW = modelH * FIG.aspect;
     unit = Math.max(mobile ? RING.unitMinM : RING.unitMin, RING.unitFrac * W);
@@ -336,7 +337,7 @@ function createKits(root) {
       const p = PRODUCT[id];
       fig.append(h('button', {
         type: 'button', class: 'pin', 'data-n': j + 1, 'data-tip': p.name, 'aria-label': COPY.pinLabel(j + 1, p.name),
-        style: `left:${FIG.cx[j]}%;top:${FIG.floor - KITS[index].heights[j] * .5}%;--pi:${j + 1}`,
+        style: `left:${FIG.cx[j]}%;top:${FIG.floor[j] - FIG.heights[j] * .5}%;--pi:${j + 1}`,
       }, h('span', { class: 'dot', 'aria-hidden': 'true' }, String(j + 1))));
     });
     const model = h('div', { class: 'lb-model' }, fig);

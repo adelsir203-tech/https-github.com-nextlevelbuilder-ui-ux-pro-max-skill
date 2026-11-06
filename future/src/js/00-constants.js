@@ -1,97 +1,94 @@
-/* ---- Constants: every number and string from the brief lives here ---- */
+/* ---- Constants: every number, table and string of the site lives here ---- */
 const NS = 'http://www.w3.org/2000/svg';
 const TAU = Math.PI * 2;
 
 const COPY = {
-  bundleTitle: 'Complete the kit',
-  bundleNote: 'Bundle all 3 and save 10%',
-  cta: 'Add full kit to bag',
-  ctaPhone: (price) => `Add full kit — €${price}`,
-  ctaDone: 'Full kit in your bag',
-  kicker: (n) => `Kit 0${n}`,
-  choose: (names) => `Pick an option for: ${names}`,
-  error: 'Couldn’t add to bag. Try again.',
-  toastOne: 'Saved to your bag',
-  toastKit: 'Kit saved to your bag',
-  bagEmpty: 'Your bag is empty. Pick an option beside a piece to save it.',
-  subtotal: (amount) => `Reference subtotal €${amount}`,
-  shortlistHead: 'future — shortlist',
-  shortlistNote: 'Reference prices; no order or payment has been placed.',
-  bagLine: (option, qty, price) => `Option ${option} · Quantity ${qty} · €${price}`,
-  shortLine: (name, option, qty) => `${name} · Option ${option} · Quantity ${qty}`,
-  remove: (name) => `Remove ${name}`,
-  addTo: (name) => `Add to bag: ${name}`,
-  added: (name) => `Added to bag: ${name}`,
-  confirm: 'Add to bag',
-  kitLabel: (n, name) => `Kit ${n}: ${name}`,
+  bundleTitle: 'Участок целиком',
+  bundleNote: 'Все три постройки — на 10% дешевле',
+  cta: 'Добавить участок в подборку',
+  ctaPhone: (price) => `Участок — ${price}`,
+  ctaDone: 'Участок в подборке',
+  kicker: (n) => `Участок 0${n}`,
+  choose: (names) => `Выберите вариант: ${names}`,
+  error: 'Не получилось добавить. Попробуйте ещё раз.',
+  toastOne: 'Добавлено в подборку',
+  toastKit: 'Участок в подборке',
+  bagEmpty: 'Подборка пуста. Выберите вариант у постройки, чтобы добавить её.',
+  subtotal: (amount) => `Ориентировочно ${amount}`,
+  shortlistHead: 'future company — подборка',
+  shortlistNote: 'Цены ориентировочные; заказ и оплата не оформлены.',
+  bagLine: (option, qty, price) => `${option} · ${qty} шт. · ${price}`,
+  shortLine: (name, option, qty) => `${name} · ${option} · ${qty} шт.`,
+  remove: (name) => `Убрать: ${name}`,
+  addTo: (name) => `Добавить в подборку: ${name}`,
+  added: (name) => `В подборке: ${name}`,
+  confirm: 'В подборку',
+  kitLabel: (n, name) => `Участок ${n}: ${name}`,
   pinLabel: (n, name) => `${n}: ${name}`,
-  drag: 'Drag',
-  view: 'View',
-  pickFirst: 'Pick an option first.',
-  // Not given in the brief; named here after the original pages' labels.
-  lotLive: (n, name) => `Lot ${n}: ${name}`,
-  like: (name) => `Like ${name}`,
-  prev: 'Previous kit',
-  next: 'Next kit',
-  autoplay: 'Autoplay',
+  drag: 'Тяни',
+  view: 'Вид',
+  pickFirst: 'Сначала выберите вариант.',
+  lotLive: (n, name) => `Проект ${n}: ${name}`,
+  like: (name) => `В избранное: ${name}`,
+  prev: 'Предыдущий участок',
+  next: 'Следующий участок',
+  autoplay: 'Автопрокрутка',
 };
 
 const PRODUCTS = [
-  { id: 'dusk-lamp', name: 'Dusk Lamp', type: 'Light', price: 240, legend: 'Finish', values: ['Opal', 'Smoke', 'Amber'], slot: 0 },
-  { id: 'hush-tower', name: 'Hush Tower', type: 'Sound', price: 410, legend: 'Grille', values: ['Bone', 'Sage', 'Graphite'], slot: 1 },
-  { id: 'noon', name: 'Noon', type: 'Light', price: 180, legend: 'Legs', values: ['Brass', 'Steel', 'Black'], slot: 2 },
-  { id: 'stack', name: 'Stack', type: 'Plants', price: 95, legend: 'Glaze', values: ['Cobalt', 'Moss', 'Ash'], slot: 3 },
-  { id: 'slow-clock', name: 'Slow Clock', type: 'Time', price: 220, legend: 'Face', values: ['Sage', 'Graphite', 'Bone'], slot: 4 },
-  { id: 'rain-column', name: 'Rain Column', type: 'Water', price: 360, legend: 'Height', values: ['S', 'M', 'L'], slot: 5 },
-  { id: 'latch', name: 'Latch', type: 'Carry', price: 58, legend: 'Strap', values: ['Black', 'Tan', 'Signal'], slot: 6 },
-  { id: 'pebble', name: 'Pebble', type: 'Control', price: 72, legend: 'Colour', values: ['Chalk', 'Slate', 'Moss'], slot: 7 },
+  { id: 'barn-124', name: 'Барн 124', type: 'Барнхаус · 124 м²', price: 8400000, legend: 'Стены', values: ['Каркас', 'Газобетон', 'Клеёный брус'], slot: 0 },
+  { id: 'nord-96', name: 'Норд 96', type: 'Одноэтажный · 96 м²', price: 6300000, legend: 'Фасад', values: ['Планкен', 'Фиброцемент', 'Штукатурка'], slot: 1 },
+  { id: 'sosny-148', name: 'Сосны 148', type: 'Два этажа · 148 м²', price: 10200000, legend: 'Отделка', values: ['Черновая', 'Предчистовая', 'Чистовая'], slot: 2 },
+  { id: 'shalash-82', name: 'Шалаш 82', type: 'А-фрейм · 82 м²', price: 5600000, legend: 'Стеклопакеты', values: ['Однокамерные', 'Двухкамерные', 'Энергосберегающие'], slot: 3 },
+  { id: 'kub-110', name: 'Куб 110', type: 'Плоская кровля · 110 м²', price: 7700000, legend: 'Терраса', values: ['Без террасы', '18 м²', '32 м²'], slot: 4 },
+  { id: 'tihiy-176', name: 'Тихий 176', type: 'Длинный дом · 176 м²', price: 11900000, legend: 'Отопление', values: ['Газ', 'Электричество', 'Тепловой насос'], slot: 5 },
+  { id: 'banya-24', name: 'Баня 24', type: 'Баня · 24 м²', price: 1450000, legend: 'Печь', values: ['Дровяная', 'Электрическая'], slot: 6 },
+  { id: 'besedka-16', name: 'Беседка 16', type: 'Беседка · 16 м²', price: 690000, legend: 'Кровля', values: ['Ламели', 'Поликарбонат', 'Металл'], slot: 7 },
 ];
 const PRODUCT = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
 
-const BAG = { key: 'future-bag-v1', maxQty: 20, maxEntries: 50, toastMs: 2500 };
+const BAG = { key: 'future-company-bag-v1', maxQty: 20, maxEntries: 50, toastMs: 2500 };
 
-/* Sheet: logical 960 x 540 at 3x; slots [x, y, w, h] */
+/* Sheet: logical 1440 x 960, rendered at 2x; slots [x, y, w, h] */
 const SHEET = {
-  w: 960, h: 540, alpha: 8,
-  slots: [
-    [0, 0, 160, 405], [160, 0, 160, 405], [320, 0, 160, 405], [480, 0, 160, 405], [640, 0, 160, 405], [800, 0, 160, 405],
-    [0, 405, 240, 135], [240, 405, 240, 135],
-  ],
+  w: 1440, h: 960, alpha: 8,
+  slots: [0, 1, 2, 3, 4, 5, 6, 7].map((i) => [(i % 3) * 480, Math.floor(i / 3) * 320, 480, 320]),
 };
-const HS = [1, .86, .9, .82, .95, .92];
 
 /* Shell */
-const ROOMS = ['home', 'line', 'kits'];
+const ROOMS = ['home', 'house', 'line', 'kits', 'faq'];
 const WIPE = { ms: 900, easing: 'cubic-bezier(.65,0,.35,1)', r: '150vmax' };
 
-/* The line */
+/* The line: a street of six houses. Houses are wide, so each height factor is
+   capped by width: HS = min(hsMax, hsWidth / aspect). */
 const LINE = {
-  n: 6, FIRST: 41,
+  n: 6,
   KX: [1.2, .744, .496, .346, .235, .15, .085],
   KF: [1.14, .89, .777, .704, .651, .616, .59],
   KH: [1.18, .832, .574, .436, .334, .258, .19],
   KB: [0, 0, 1.5, 4, 8, 12, 17],
   KO: [1, 1, 1, 1, .86, .5, 0],
+  hsMax: .52, hsWidth: .64, frontW: .78,
   layout: 1.2, ease: .0072, snap: .0004, dtMax: 50,
   dragMin: 150, dragFrac: .2, clickPx: 6,
   wheelClamp: 120, wheelDiv: 420, wheelIdle: 150,
   blurMin: .2, ringLerp: .32, phoneCard: 160,
 };
 const RAIL = [
-  ['dusk-lamp', 'pebble'], ['hush-tower', 'latch'], ['noon', 'pebble'],
-  ['stack', 'latch'], ['slow-clock', 'pebble'], ['rain-column', 'latch'],
+  ['barn-124', 'banya-24'], ['nord-96', 'besedka-16'], ['sosny-148', 'banya-24'],
+  ['shalash-82', 'besedka-16'], ['kub-110', 'banya-24'], ['tihiy-176', 'besedka-16'],
 ];
 
-/* Kits */
+/* Plots: a gazebo, a house and a banya on one lawn */
 const KITS = [
-  { name: 'Reading Corner', pieces: ['dusk-lamp', 'stack', 'pebble'], heights: [70, 44, 12] },
-  { name: 'Slow Morning', pieces: ['slow-clock', 'rain-column', 'latch'], heights: [52, 56, 14] },
-  { name: 'Night Desk', pieces: ['noon', 'hush-tower', 'pebble'], heights: [54, 48, 12] },
-  { name: 'Hallway', pieces: ['dusk-lamp', 'hush-tower', 'latch'], heights: [70, 46, 14] },
-  { name: 'Window Seat', pieces: ['stack', 'noon', 'pebble'], heights: [42, 56, 12] },
-  { name: 'Weekend', pieces: ['rain-column', 'slow-clock', 'pebble'], heights: [58, 50, 12] },
-];
-const FIG = { aspect: .5625, cx: [24, 55, 84], floor: 92, discount: .9 };
+  { name: 'Семейный', house: 'sosny-148' },
+  { name: 'У воды', house: 'shalash-82' },
+  { name: 'Для двоих', house: 'nord-96' },
+  { name: 'Тихий', house: 'tihiy-176' },
+  { name: 'Северный', house: 'barn-124' },
+  { name: 'Выходные', house: 'kub-110' },
+].map((k) => ({ ...k, pieces: ['besedka-16', k.house, 'banya-24'] }));
+const FIG = { aspect: .75, cx: [17, 50, 84], heights: [25, 46, 29], floor: [96, 85, 96], z: [1, 0, 2], discount: .9, phoneFit: .9 };
 const RING = {
   speed: 5000, K: 95, C: 2 * Math.sqrt(95), lag: .04, entrance: -1.15, fs: 1.08,
   subSteps: 3, dtMax: .034, settle: .0005, minBodies: 8,
@@ -100,11 +97,18 @@ const RING = {
   blur1: 1.8, blurStep: 2, blurMax: 6.5, opBase: .55, opSpan: .3,
   dragStart: 8, dragRatio: 1.2, abandonY: 10, samples: 6, swipePx: 30, flingV: .3, fling: 160, clampSteps: 2, clickMute: 60,
   wheelAcc: 45, wheelLock: 520, cursorLerp: .18, cursorDone: .2,
-  frameMin: 380, phoneFrame: 1.09, phoneRelatch: 160, modelMin: 200, resizeMs: 120, lbMs: 950, lbMin: 160,
+  frameMin: 380, phoneFrame: .84, phoneRelatch: 160, modelMin: 200, resizeMs: 120, lbMs: 950, lbMin: 160,
   revealMargin: '0px 0px -22% 0px',
-  // Not given in the brief; values follow the original mechanic.
   addMs: 420,
 };
+
+/* The house in fog: morning / evening */
+const HOUSE = {
+  SINK: 240, RISE: 820, DEPTH: .27,
+  fogMaxW: 960, wide: { aspect: 16 / 9, porch: [.6504, .6294] }, tall: { aspect: 9 / 16, porch: [.6998, .6305] },
+  pos: [.5, .62], tallQ: '(max-aspect-ratio: 3/4)',
+};
+
 const MOBILE_Q = '(max-width: 820px)';
 const FINE_Q = '(hover: hover) and (pointer: fine)';
 const RM_Q = '(prefers-reduced-motion: reduce)';
@@ -166,7 +170,7 @@ const SILK = {
   fluff: { p: .4, dust: 5, dustColour: '#8a7a6a', fibres: 10, fibreColour: 'rgba(240,232,220,.8)' },
   dew: { per: 55, base: .4, r: [1.6, 6.2], sprite: 64 },
   glint: .6, ageFade: 90, ageMin: .5, tufts: 30, bead: 3,
-  shadow: { colour: 'rgba(8,14,70,.42)', blur: 3.5, x: 7, y: 11 },
+  shadow: { colour: 'rgba(52,40,18,.36)', blur: 3.5, x: 7, y: 11 },
   drops: { slope: 9, keep: .95, fall: 1100, splatAfter: 10, maxSplats: 400 },
   clearFade: 2.6, footBuzz: [30, .6], landBuzz: [140, 2], jumpBuzz: [140, 3],
   // Not given in the brief; values follow the original mechanic.

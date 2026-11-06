@@ -30,5 +30,8 @@ await tab.route('http://studio.local/**', (route) => {
 await tab.goto('http://studio.local/');
 await tab.waitForFunction(() => typeof window.renderAll === 'function');
 const out = await tab.evaluate(() => window.renderAll());
-for (const [name, b64] of Object.entries(out)) writeFileSync(join(OUT, name), Buffer.from(b64, 'base64'));
+for (const [name, b64] of Object.entries(out)) {
+  if (name.endsWith('.json')) process.stdout.write(`${name}: ${Buffer.from(b64, 'base64')} (HOUSE.porch)\n`);
+  else writeFileSync(join(OUT, name), Buffer.from(b64, 'base64'));
+}
 await browser.close();
