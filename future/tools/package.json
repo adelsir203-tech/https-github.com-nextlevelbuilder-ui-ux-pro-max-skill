@@ -1,0 +1,9 @@
+{
+  "name": "future-tools",
+  "private": true,
+  "type": "module",
+  "description": "Build-time asset rendering for future/index.html",
+  "devDependencies": {
+    "three": "0.170.0"
+  }
+}
