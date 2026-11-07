@@ -1,5 +1,5 @@
-// Browser-side studio: builds every asset as a 3D model with three.js and
-// renders it on a transparent background. Loaded by make-assets.mjs.
+// Browser-side studio: the houses, the banya, the gazebo and the fog-house hero,
+// built as 3D models with three.js and rendered. Loaded by make-assets.mjs.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
@@ -51,45 +51,8 @@ function tex(c) {
   t.anisotropy = 8;
   return t;
 }
-/* Planar UVs from world x/z, for top-view albedo maps */
-function planarUV(geo, matrix, x0, z0, w, h) {
-  const p = geo.attributes.position, uv = new Float32Array(p.count * 2), v = new THREE.Vector3();
-  for (let i = 0; i < p.count; i++) {
-    v.fromBufferAttribute(p, i).applyMatrix4(matrix);
-    uv[i * 2] = (v.x - x0) / w;
-    uv[i * 2 + 1] = 1 - (v.z - z0) / h;
-  }
-  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-}
-function ellipsoid(c, r, mat, seg = 96) {
-  const geo = new THREE.SphereGeometry(1, seg, seg / 2);
-  geo.scale(r[0], r[1], r[2]);
-  geo.translate(c[0], c[1], c[2]);
-  return mesh(geo, mat);
-}
-/* Hairs as instanced thin cones; sample() returns { p, d, len, color } */
-function hairs(count, radius, sample, rough = .85) {
-  const geo = new THREE.ConeGeometry(radius, 1, 5, 1, true);
-  geo.translate(0, .5, 0);
-  const im = new THREE.InstancedMesh(geo, std(0xffffff, rough), count);
-  im.castShadow = true; im.receiveShadow = true;
-  const up = V3(0, 1, 0), q = new THREE.Quaternion(), m = new THREE.Matrix4(), s = new THREE.Vector3();
-  for (let i = 0; i < count; i++) {
-    const h = sample(i);
-    q.setFromUnitVectors(up, h.d.normalize());
-    s.set(h.w || 1, h.len, h.w || 1);
-    m.compose(h.p, q, s);
-    im.setMatrixAt(i, m);
-    im.setColorAt(i, h.color);
-  }
-  return im;
-}
-function pixelColor(ctx, x, y) {
-  const d = ctx.getImageData(Math.max(0, Math.min(ctx.canvas.width - 1, Math.round(x))), Math.max(0, Math.min(ctx.canvas.height - 1, Math.round(y))), 1, 1).data;
-  return new THREE.Color().setRGB(d[0] / 255, d[1] / 255, d[2] / 255, THREE.SRGBColorSpace);
-}
 
-/* Renders an object. view: { w, h, elev, azim, fov } (perspective, fitted) or { ortho: [l, r, t, b], top: true } */
+/* Renders an object fitted to view: { w, h, elev, azim, fov } */
 function render(object, view) {
   const scene = new THREE.Scene();
   scene.environment = ENV;
@@ -97,24 +60,14 @@ function render(object, view) {
   scene.add(object);
   const box = new THREE.Box3().setFromObject(object);
   const size = box.getSize(V3()), center = box.getCenter(V3());
-  let camera;
-  if (view.ortho) {
-    const [l, r, t, b] = view.ortho, hw = (r - l) / 2, hh = (t - b) / 2;
-    camera = new THREE.OrthographicCamera(-hw, hw, hh, -hh, 1, 5000);
-    camera.position.set((l + r) / 2, 2000, -(t + b) / 2);
-    camera.up.set(0, 0, -1);
-    camera.lookAt((l + r) / 2, 0, -(t + b) / 2);
-  } else {
-    camera = new THREE.PerspectiveCamera(view.fov ?? 22, view.w / view.h, .1, 5000);
-    const e = THREE.MathUtils.degToRad(view.elev ?? 8), a = THREE.MathUtils.degToRad(view.azim ?? 0);
-    const radius = size.length() / 2;
-    const dist = radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.02;
-    camera.position.set(center.x + Math.sin(a) * Math.cos(e) * dist, center.y + Math.sin(e) * dist, center.z + Math.cos(a) * Math.cos(e) * dist);
-    camera.lookAt(center);
-  }
+  const camera = new THREE.PerspectiveCamera(view.fov ?? 22, view.w / view.h, .1, 5000);
+  const e = THREE.MathUtils.degToRad(view.elev ?? 8), a = THREE.MathUtils.degToRad(view.azim ?? 0);
+  const dist = size.length() / 2 / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.02;
+  camera.position.set(center.x + Math.sin(a) * Math.cos(e) * dist, center.y + Math.sin(e) * dist, center.z + Math.cos(a) * Math.cos(e) * dist);
+  camera.lookAt(center);
   const ext = Math.max(size.x, size.y, size.z) || 1;
   const key = new THREE.DirectionalLight(0xfff8f0, view.key ?? 2.4);
-  const kd = view.ortho ? V3(-.75, 1.2, -.75) : V3(-1.1, 1.5, 1.2);
+  const kd = V3(-1.1, 1.5, 1.2);
   key.position.copy(center).addScaledVector(kd.normalize(), ext * 3);
   key.target.position.copy(center);
   key.castShadow = true;
@@ -125,7 +78,7 @@ function render(object, view) {
   const sc = key.shadow.camera;
   sc.left = -ext; sc.right = ext; sc.top = ext; sc.bottom = -ext; sc.near = .1; sc.far = ext * 8;
   const rim = new THREE.DirectionalLight(0xe4ecff, view.rim ?? .7);
-  rim.position.copy(center).addScaledVector(V3(1.2, .8, view.ortho ? 1 : -1.4).normalize(), ext * 3);
+  rim.position.copy(center).addScaledVector(V3(1.2, .8, -1.4).normalize(), ext * 3);
   scene.add(key, key.target, rim, new THREE.HemisphereLight(0xffffff, 0x8a8680, .35));
   renderer.setSize(view.w, view.h, false);
   renderer.render(scene, camera);
@@ -537,240 +490,6 @@ function hero(night, portrait) {
   return { sky, full, cut, porch: [(p.x + 1) / 2, (1 - p.y) / 2] };
 }
 
-/* ---------------- spider (sprite space 1254, top view, head toward +z) ---------------- */
-const RIGHT_LEGS = [
-  [[470, 760], [370, 830], [400, 1160]],
-  [[460, 665], [300, 690], [100, 955]],
-  [[480, 605], [370, 580], [55, 475]],
-  [[490, 560], [360, 420], [410, 52]],
-];
-const COL = { dark: '#2a190f', brown: '#5b3a22', warm: '#7d5433', cream: '#e2cfae', pale: '#f0e4cc' };
-
-function spiderAlbedo() {
-  return canvas(1254, 1254, (g) => {
-    g.fillStyle = '#4c3019';
-    g.fillRect(0, 0, 1254, 1254);
-    g.filter = 'blur(6px)';
-    g.fillStyle = '#e3d0ae';
-    g.fill(new Path2D('M444,372 C452,474 540,536 628,538 C716,536 804,474 812,372 C790,452 718,500 628,502 C538,500 466,452 444,372 Z'));
-    g.fillStyle = '#d9c39d';
-    g.fill(new Path2D('M600,190 C604,260 606,350 610,470 L646,470 C650,350 652,260 656,190 C646,176 610,176 600,190 Z'));
-    g.strokeStyle = 'rgba(30,18,10,.85)'; g.lineWidth = 12; g.lineJoin = 'round';
-    for (let i = 0; i < 5; i++) { const y = 220 + i * 52, w = 64 - i * 5; g.beginPath(); g.moveTo(628 - w, y + 22); g.lineTo(628, y); g.lineTo(628 + w, y + 22); g.stroke(); }
-    g.fillStyle = '#ead9ba';
-    [[540, 260], [716, 260], [520, 340], [736, 340], [548, 420], [708, 420]].forEach(([x, y]) => { g.beginPath(); g.ellipse(x, y, 18, 14, 0, 0, Math.PI * 2); g.fill(); });
-    g.fillStyle = '#3a2414';
-    g.fillRect(480, 548, 300, 300);
-    g.fillStyle = '#e1cda9';
-    g.fill(new Path2D('M498,700 C504,650 520,612 540,590 C530,640 528,700 536,780 C516,770 498,744 498,700 Z'));
-    g.fill(new Path2D('M762,700 C756,650 740,612 720,590 C730,640 732,700 724,780 C744,770 762,744 762,700 Z'));
-    g.fillStyle = 'rgba(22,14,8,.9)';
-    g.fill(new Path2D('M560,640 C580,620 680,620 700,640 C716,700 712,770 700,810 C660,824 600,824 560,810 C548,770 544,700 560,640 Z'));
-    g.fillStyle = '#d8c19c';
-    g.beginPath(); g.ellipse(630, 600, 36, 24, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = 'rgba(230,160,85,.8)';
-    g.beginPath(); g.ellipse(630, 772, 70, 14, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#efe3cc';
-    [[545, 880], [712, 880]].forEach(([x, y]) => { g.beginPath(); g.ellipse(x, y, 62, 58, 0, 0, Math.PI * 2); g.fill(); });
-    g.filter = 'none';
-  });
-}
-function bodyPart(c, r, albedo, roughness = .85) {
-  const m = ellipsoid(c, r, std(0xffffff, roughness, 0, { map: albedo }));
-  planarUV(m.geometry, m.matrixWorld, 0, 0, 1254, 1254);
-  return m;
-}
-function furOn(R, ctx, c, r, count, len, rad, back, ybias = 0) {
-  return hairs(count, rad, () => {
-    let nx, ny, nz;
-    do { nx = R() * 2 - 1; ny = R() * 2 - 1; nz = R() * 2 - 1; } while (nx * nx + ny * ny + nz * nz > 1 || ny < ybias);
-    const l = Math.hypot(nx, ny, nz) || 1; nx /= l; ny /= l; nz /= l;
-    const p = V3(c[0] + nx * r[0], c[1] + ny * r[1], c[2] + nz * r[2]);
-    const n = V3(nx / r[0], ny / r[1], nz / r[2]).normalize();
-    const d = n.clone().addScaledVector(back, .9).add(V3((R() - .5) * .5, 0, (R() - .5) * .5));
-    const col = pixelColor(ctx, p.x, p.z).offsetHSL(0, 0, (R() - .5) * .14);
-    if (R() < .12) col.lerp(new THREE.Color(0xf3e8d2), .6);
-    return { p: p.addScaledVector(n, -1), d, len: len * (.55 + R() * .7), color: col };
-  });
-}
-function legs(group, R, mirrorFn, scaleY = 1) {
-  const bandsF = [[0, .12, COL.dark], [.12, .22, COL.cream], [.22, .86, COL.brown], [.86, 1, COL.cream]];
-  const bandsT = [[0, .07, COL.pale], [.07, .4, COL.brown], [.4, .5, COL.cream], [.5, .76, COL.dark], [.76, .83, COL.cream], [.83, .97, COL.warm], [.97, 1, COL.dark]];
-  const mats = {};
-  const mat = (c) => (mats[c] ||= std(c, .8));
-  const bone = (a, b, r0, r1, bands, hairN) => {
-    const dir = b.clone().sub(a), len = dir.length(), u = dir.clone().normalize();
-    bands.forEach(([t0, t1, c]) => {
-      const pa = a.clone().addScaledVector(dir, t0), pb = a.clone().addScaledVector(dir, t1);
-      const seg = mesh(new THREE.CylinderGeometry(r0 + (r1 - r0) * t1, r0 + (r1 - r0) * t0, len * (t1 - t0) + .6, 20), mat(c));
-      seg.position.copy(pa).add(pb).multiplyScalar(.5);
-      seg.quaternion.setFromUnitVectors(V3(0, 1, 0), u);
-      group.add(seg);
-    });
-    const side = V3(0, 1, 0).cross(u).normalize(), up = u.clone().cross(side).normalize();
-    group.add(hairs(hairN, 1.3, () => {
-      const t = R(), ang = R() * Math.PI * 2, rr = r0 + (r1 - r0) * t;
-      const radial = side.clone().multiplyScalar(Math.cos(ang)).addScaledVector(up, Math.sin(ang));
-      const p = a.clone().addScaledVector(dir, t).addScaledVector(radial, rr * .9);
-      const light = R() < .5;
-      return { p, d: radial.clone().addScaledVector(u, .9), len: 8 + R() * 13, color: new THREE.Color(light ? 0xe8d6b6 : 0x2a190f) };
-    }));
-    for (let i = 0; i < 6; i++) {
-      const t = .15 + R() * .7, ang = R() * Math.PI * 2;
-      const radial = side.clone().multiplyScalar(Math.cos(ang)).addScaledVector(up, Math.abs(Math.sin(ang)));
-      group.add(hairs(1, 1.6, () => ({ p: a.clone().addScaledVector(dir, t).addScaledVector(radial, r0 * .8), d: radial.clone().addScaledVector(u, .7), len: 24, color: new THREE.Color(0x1b100a) })));
-    }
-  };
-  RIGHT_LEGS.forEach((L, i) => [false, true].forEach((m) => {
-    const pts = L.map(([x, z]) => (m ? mirrorFn(x) : x)).map((x, j) => [x, L[j][1]]);
-    const front = i === 0;
-    const H = V3(pts[0][0], 70 * scaleY, pts[0][1]), Kn = V3(pts[1][0], 150 * scaleY, pts[1][1]), F = V3(pts[2][0], 14, pts[2][1]);
-    bone(H, Kn, front ? 23 : 18, front ? 19 : 15, bandsF, 120);
-    bone(Kn, F, front ? 17 : 14, front ? 7.5 : 6, bandsT, 200);
-    const joint = mesh(new THREE.SphereGeometry(front ? 18 : 15, 24, 16), mat(COL.cream));
-    joint.position.copy(Kn);
-    group.add(joint);
-  }));
-}
-function spider() {
-  const R = rng(31);
-  const g = new THREE.Group();
-  const alb = spiderAlbedo(), at = tex(alb), actx = alb.getContext('2d', { willReadFrequently: true });
-  legs(g, R, (x) => 1254 - x);
-  const abd = [628, 120, 350], abdR = [200, 118, 188];
-  g.add(bodyPart(abd, abdR, at));
-  g.add(furOn(R, actx, abd, abdR, 9000, 20, 1.5, V3(0, 0, -1), -.15));
-  g.add(ellipsoid([627, 70, 168], [22, 18, 20], std(0x2a190f, .7)));
-  g.add(ellipsoid([627, 80, 545], [26, 22, 30], std(0x2a190f, .8)));
-  const ceph = [630, 96, 688], cephR = [152, 92, 134];
-  g.add(bodyPart(ceph, cephR, at));
-  g.add(furOn(R, actx, ceph, cephR, 5200, 13, 1.25, V3(0, 0, -.6), .05));
-  g.add(ellipsoid([627, 52, 862], [44, 30, 46], std(0x3a2414, .75)));
-  [[545, 880], [712, 880]].forEach(([x, z]) => {
-    const c = [x, 56, z], r = [54, 44, 50];
-    g.add(bodyPart(c, r, at, .95));
-    g.add(furOn(R, actx, c, r, 1800, 13, 1.1, V3(0, .2, .6), -.3));
-  });
-  const eyeM = phys({ color: 0x0b0908, roughness: .06, clearcoat: 1, clearcoatRoughness: .04 });
-  [[524, 150, 642, 15], [736, 150, 642, 15], [548, 166, 706, 6], [712, 166, 706, 6], [526, 128, 788, 21], [734, 128, 788, 21], [590, 120, 800, 32], [670, 120, 800, 32]].forEach(([x, y, z, r]) => {
-    g.add(ellipsoid([x, y, z], [r, r * .85, r], eyeM, 48));
-  });
-  return render(g, { w: 1120, h: 1120, ortho: [0, 1254, 0, -1254], env: .8, key: 2.6, rim: .5 });
-}
-
-/* ---------------- idle head (sprite space 308, top view) ---------------- */
-function idleHead() {
-  const R = rng(55);
-  const g = new THREE.Group();
-  const alb = canvas(308, 308, (c) => {
-    c.fillStyle = '#7a5232'; c.fillRect(0, 0, 308, 308);
-    c.filter = 'blur(2px)';
-    c.fillStyle = '#e3cfab';
-    c.fill(new Path2D('M100,150 C100,130 106,116 114,108 C110,130 110,160 114,186 C104,178 100,166 100,150 Z'));
-    c.fill(new Path2D('M208,150 C208,130 202,116 194,108 C198,130 198,160 194,186 C204,178 208,166 208,150 Z'));
-    c.fillStyle = '#f0b26a';
-    c.beginPath(); c.ellipse(139, 140, 14, 4, -.15, 0, Math.PI * 2); c.fill();
-    c.beginPath(); c.ellipse(170, 140, 14, 4, .15, 0, Math.PI * 2); c.fill();
-    c.fillStyle = 'rgba(233,143,138,.55)';
-    c.beginPath(); c.ellipse(111, 172, 9, 6, 0, 0, Math.PI * 2); c.fill();
-    c.beginPath(); c.ellipse(197, 172, 9, 6, 0, 0, Math.PI * 2); c.fill();
-    c.fillStyle = '#f6eedf';
-    [[128, 206], [179, 206]].forEach(([x, y]) => { c.beginPath(); c.ellipse(x, y, 20, 18, 0, 0, Math.PI * 2); c.fill(); });
-    c.filter = 'none';
-  });
-  const at = tex(alb), actx = alb.getContext('2d', { willReadFrequently: true });
-  const part = (cc, r, count, len, rad, back) => {
-    const m = ellipsoid(cc, r, std(0xffffff, .9, 0, { map: at }));
-    planarUV(m.geometry, m.matrixWorld, 0, 0, 308, 308);
-    g.add(m);
-    g.add(furOn(R, actx, cc, r, count, len, rad, back, -.1));
-  };
-  [[128, 206], [179, 206]].forEach(([x, z]) => part([x, 14, z], [19, 14, 17], 900, 4.5, .38, V3(0, .2, .6)));
-  part([154, 26, 150], [56, 30, 54], 4200, 4.2, .34, V3(0, 0, -.4));
-  const eyeM = phys({ color: 0x0b0908, roughness: .05, clearcoat: 1, clearcoatRoughness: .03 });
-  const glint = std(0xffffff, .3, 0, { emissive: 0xffffff, emissiveIntensity: 1.2 });
-  [[139, 158, 12.5], [170, 158, 12.5], [117, 150, 7.5], [192, 150, 7.5], [112, 136, 4], [197, 136, 4]].forEach(([x, z, r]) => {
-    g.add(ellipsoid([x, 46, z], [r + .9, r * .7, r + .9], std(0x3a2414, .8), 32));
-    g.add(ellipsoid([x, 47.5, z], [r, r * .75, r], eyeM, 48));
-    g.add(ellipsoid([x - r * .34, 47.5 + r * .72, z - r * .36], [r * .28, r * .1, r * .28], glint, 16));
-    g.add(ellipsoid([x + r * .36, 47.5 + r * .66, z + r * .34], [r * .12, r * .06, r * .12], glint, 12));
-  });
-  return render(g, { w: 616, h: 616, ortho: [0, 308, 0, -308], env: .85, key: 2.4, rim: .4 });
-}
-
-/* ---------------- fly (sprite space 920 x 945, top view, head toward -z) ---------------- */
-const WING = [[398, 380], [330, 415], [250, 515], [180, 615], [132, 720], [148, 795], [212, 805], [305, 742], [385, 652], [410, 560], [414, 455]];
-function fly() {
-  const R = rng(91);
-  const g = new THREE.Group();
-  const alb = canvas(920, 945, (c) => {
-    c.fillStyle = '#5c5a56'; c.fillRect(0, 0, 920, 945);
-    c.filter = 'blur(3px)';
-    c.fillStyle = '#1a1918';
-    [-24, -9, 9, 24].forEach((dx) => c.fillRect(460 + dx - 4, 330, 8, 140));
-    for (let i = 0; i < 4; i++) {
-      const y = 560 + i * 48;
-      c.fillStyle = '#242322'; c.fillRect(398, y, 124, 10);
-      c.fillStyle = '#9a968e'; c.fillRect(430, y + 12, 18, 22); c.fillRect(472, y + 12, 18, 22);
-    }
-    c.filter = 'none';
-  });
-  const at = tex(alb), actx = alb.getContext('2d', { willReadFrequently: true });
-  const part = (cc, r, mat) => {
-    const m = ellipsoid(cc, r, mat);
-    planarUV(m.geometry, m.matrixWorld, 0, 0, 920, 945);
-    g.add(m);
-  };
-  const skin = std(0xffffff, .55, 0, { map: at });
-  part([460, 40, 650], [62, 38, 138], skin);
-  part([460, 60, 405], [56, 48, 86], skin);
-  part([460, 55, 250], [92, 40, 58], std(0x2c2a28, .6));
-  const eye = phys({ color: 0x8c2616, roughness: .32, clearcoat: .6, clearcoatRoughness: .3 });
-  g.add(ellipsoid([397, 68, 236], [56, 46, 64], eye, 64), ellipsoid([523, 68, 236], [56, 46, 64], eye, 64));
-  part([460, 82, 225], [16, 10, 46], std(0x8f8a80, .7));
-  const bristle = (cc, r, n) => g.add(hairs(n, 2, () => {
-    let nx, ny, nz;
-    do { nx = R() * 2 - 1; ny = R() * 2 - 1; nz = R() * 2 - 1; } while (nx * nx + ny * ny + nz * nz > 1 || ny < 0);
-    const l = Math.hypot(nx, ny, nz); nx /= l; ny /= l; nz /= l;
-    return { p: V3(cc[0] + nx * r[0], cc[1] + ny * r[1], cc[2] + nz * r[2]), d: V3(nx, ny, nz + .4), len: 10 + R() * 12, color: new THREE.Color(0x0e0e0d) };
-  }));
-  bristle([460, 60, 405], [56, 48, 86], 260);
-  bristle([460, 40, 650], [62, 38, 138], 220);
-  const legM = std(0x1b1a19, .55, .1);
-  [[[428, 330], [340, 262], [300, 150]], [[420, 420], [270, 400], [170, 470]], [[438, 520], [396, 690], [372, 860]]].forEach((L) => {
-    [L, L.map(([x, z]) => [920 - x, z])].forEach((pts) => {
-      const P = [V3(pts[0][0], 30, pts[0][1]), V3(pts[1][0], 60, pts[1][1]), V3(pts[2][0], 6, pts[2][1])];
-      for (let s = 0; s < 2; s++) {
-        const dir = P[s + 1].clone().sub(P[s]);
-        const seg = mesh(new THREE.CylinderGeometry(s ? 4.5 : 7, s ? 7 : 7.5, dir.length(), 16), legM);
-        seg.position.copy(P[s]).add(P[s + 1]).multiplyScalar(.5);
-        seg.quaternion.setFromUnitVectors(V3(0, 1, 0), dir.normalize());
-        g.add(seg);
-      }
-      const j = mesh(new THREE.SphereGeometry(7, 16, 12), legM); j.position.copy(P[1]); g.add(j);
-    });
-  });
-  const veins = (mx) => canvas(920, 945, (c) => {
-    c.fillStyle = 'rgba(226,233,239,.42)';
-    c.beginPath();
-    WING.forEach(([x, z], i) => { const X = mx ? 920 - x : x; const cx = mx ? 620 : 300; const px = cx + (X - cx) * .96, pz = 610 + (z - 610) * .96; if (i) c.lineTo(px, pz); else c.moveTo(px, pz); });
-    c.closePath(); c.fill();
-    c.strokeStyle = 'rgba(40,40,38,.7)'; c.lineWidth = 3;
-    const tx = (x) => (mx ? 920 - x : x);
-    c.stroke(new Path2D(`M${tx(392)},398 C${tx(330)},480 ${tx(240)},600 ${tx(150)},740 M${tx(396)},420 C${tx(350)},520 ${tx(280)},640 ${tx(196)},790 M${tx(398)},450 C${tx(380)},560 ${tx(330)},660 ${tx(270)},770 M${tx(330)},520 C${tx(300)},560 ${tx(290)},600 ${tx(300)},650`));
-  });
-  [false, true].forEach((mx) => {
-    const geo = new THREE.PlaneGeometry(920, 945);
-    geo.rotateX(-Math.PI / 2);
-    geo.translate(460, 0, 472.5);
-    const w = new THREE.Mesh(geo, phys({ map: tex(veins(mx)), transparent: true, roughness: .25, iridescence: .7, iridescenceIOR: 1.4, side: THREE.DoubleSide, depthWrite: false }));
-    w.position.y = 96;
-    w.renderOrder = 5;
-    g.add(w);
-  });
-  return render(g, { w: 920, h: 945, ortho: [0, 920, 0, -945], env: .9, key: 2.2, rim: .5 });
-}
-
 window.renderAll = async () => {
   const out = {};
   const enc = (c, w, h, q) => down(c, w, h).toDataURL('image/webp', q).split(',')[1];
@@ -784,8 +503,5 @@ window.renderAll = async () => {
       if (night) out[`porch${portrait ? '-tall' : ''}.json`] = btoa(JSON.stringify(hr.porch));
     }
   }
-  out['spider.webp'] = enc(spider(), 560, 560, .92);
-  out['idle-head.webp'] = enc(idleHead(), 308, 308, .94);
-  out['fly.webp'] = enc(fly(), 240, 246, .94);
   return out;
 };

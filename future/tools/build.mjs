@@ -19,9 +19,6 @@ const js = readdirSync(join(ROOT, 'src/js')).filter((f) => f.endsWith('.js')).so
   .map((f) => read(`src/js/${f}`)).join('\n');
 const script = fill(`(() => {\n'use strict';\n${js}})();\n`, {
   '%SHEET%': () => webp('assets/objects-sheet.webp'),
-  '%SPIDER%': () => webp('assets/spider.webp'),
-  '%HEAD%': () => webp('assets/idle-head.webp'),
-  '%FLY%': () => webp('assets/fly.webp'),
 });
 const html = fill(read('src/index.html'), {
   '/*STYLE*/': () => css,

@@ -3,7 +3,6 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const wrap = (x, n) => ((x % n) + n) % n;
-const lerp = (a, b, t) => a + (b - a) * t;
 const RM = window.matchMedia(RM_Q);
 const FINE = window.matchMedia(FINE_Q);
 const MOBILE = window.matchMedia(MOBILE_Q);
@@ -33,7 +32,7 @@ const pad2 = (n) => String(n).padStart(2, '0');
 const restart = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
 
 /* ---- The objects sheet: decoded once, trimmed by alpha, shared by every crop ---- */
-const Sheet = { img: null, url: '', boxes: [] };
+const Sheet = { url: '', boxes: [] };
 
 async function loadSheet() {
   const img = new Image();
@@ -65,7 +64,6 @@ async function loadSheet() {
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
   Sheet.url = URL.createObjectURL(new Blob([bytes], { type: 'image/webp' }));
-  Sheet.img = img;
 }
 
 /* Nested-SVG crop: nothing outside the trimmed box can ever show */

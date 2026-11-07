@@ -113,72 +113,55 @@ const MOBILE_Q = '(max-width: 820px)';
 const FINE_Q = '(hover: hover) and (pointer: fine)';
 const RM_Q = '(prefers-reduced-motion: reduce)';
 
-/* Home: spider rig in sprite units (base 1254) */
-const RIG = {
-  base: 1254,
-  pivot: [627, 600], waist: [627, 548], spinneret: [627, 150],
-  abdomen: [628, 345, 220, 205],
-  head: [[630, 680, 172, 148], [545, 880, 74, 70], [712, 880, 74, 70]],
-  legs: [
-    [[470, 760], [370, 830], [400, 1160]],
-    [[460, 665], [300, 690], [100, 955]],
-    [[480, 605], [370, 580], [55, 475]],
-    [[490, 560], [360, 420], [410, 52]],
+/* The tower: floor geometry measured on the rendered plate, in pixels of the 1440 x 900 frame
+   (floors: [top, bottom] for levels 4..32; x: tower edges; spots: doorways on the hall still) */
+/* Tower media: stills through the Higgsfield image proxy, videos straight from the CDN */
+const TW_BASE = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/';
+const twImg = (f) => `https://images.higgs.ai/?default=1&output=webp&url=${encodeURIComponent(TW_BASE + f)}&w=2400&q=85`;
+const twVid = (f) => TW_BASE + f;
+const TOWER = {
+  first: 4, last: 32, start: 9,
+  // floor L's top edge in frame pixels is base − (L − 3) × slab; the hit box spans the 29 slabs
+  base: 670.2, slab: 21.58, hitTop: 44.4, hitH: 625.8, originX: 47.8,
+  push: 1.12, back: 2.2, still: [2688, 1520],
+  profiles: { fly: [2.2, 3.6, 3.0], in: [3.0, 3.4, 1.7], walk: [2.4, 3.6, 1.7] },
+  rooms: ['kitchen', 'bath', 'bedroom'],
+  spots: { kitchen: [.22, .36], bath: [.505, .36], bedroom: [.745, .36] },
+  phonePos: { hall: .5, kitchen: .38, bath: .45, bedroom: .55 },
+  media: {
+    loop: twVid('hf_20261107_152829_a8127cb8-e6b4-4267-98d7-e54c6cabfd94.mp4'),
+    fly: twVid('hf_20261107_012400_0461ff8c-bb51-4afe-ad75-1bbd674dd3b1.mp4'),
+    in: twVid('hf_20261107_014258_61746a5d-b98d-49f7-a84a-c8f1b333cf6c.mp4'),
+    hall: twImg('hf_20261107_014046_1db8be00-cb7e-4643-bb1f-ae530ddae2f0.png'),
+    kitchen: twImg('hf_20261107_014151_6f33c13e-6e41-4f4c-86f0-07885871cc46.png'),
+    bath: twImg('hf_20261107_014152_8b6873d7-3836-4e9b-8173-7663da456a71.png'),
+    bedroom: twImg('hf_20261107_014151_2450b5e6-3faf-474c-87be-cd61957d0c93.png'),
+    'kitchen-in': twVid('hf_20261107_014300_cf88f6e8-0957-444f-a562-13615f468409.mp4'),
+    'bath-in': twVid('hf_20261107_014253_7a8dd00c-7726-474f-8cdf-5d8e17232ff0.mp4'),
+    'bedroom-in': twVid('hf_20261107_014301_688c9564-7cbc-4637-83a7-bbf841dcb7f5.mp4'),
+    'kitchen-out': twVid('hf_20261107_014303_727ca462-f73b-4552-95f9-172a8ea681f3.mp4'),
+    'bath-out': twVid('hf_20261107_014303_d32b6ebf-a232-4e44-b75c-67a346a0c560.mp4'),
+    'bedroom-out': twVid('hf_20261107_014259_e9a58c74-71b9-4873-924c-2414f0e81c34.mp4'),
+  },
+  types: [
+    { from: 4, to: 11, type: 'Одна спальня', desc: 'Спокойная современная квартира с видом на озеро и собственным балконом.', facts: ['72 м²', '1 санузел', 'Восточный свет'] },
+    { from: 12, to: 19, type: 'Две спальни', desc: 'Гостиная выходит на террасу, обе спальни смотрят на озеро.', facts: ['118 м²', '2 санузла', 'Угловая терраса'] },
+    { from: 20, to: 27, type: 'Три спальни', desc: 'Широкая угловая квартира: изогнутое стекло с трёх сторон и тихий кабинет.', facts: ['164 м²', '3 санузла', 'Озеро и холмы'] },
+    { from: 28, to: 32, type: 'Пентхаус', desc: 'Целый этаж, открытый небу, и собственный бассейн над туманом.', facts: ['290 м²', '4 санузла', 'Бассейн на крыше'] },
   ],
-  legWidth: 92, fade: .28, reachMin: 1.15, overlap: .12,
-  idle: { size: 308, scale: 3.3, from: [154, 150], to: [630, 690] },
-  eyes: [[139, 158, 12.5], [170, 158, 12.5], [117, 150, 7.5], [192, 150, 7.5], [112, 136, 4], [197, 136, 4]],
-  lid: [.82, .78, .75], lidLine: 'rgba(40,22,12,.7)',
-  zPoint: [260, -170],
+  copy: {
+    level: (n) => `Этаж ${n}`,
+    hallTitle: (n, type) => `Этаж ${n}, ${type.toLowerCase()}`,
+    backOut: 'Выйти на улицу',
+    backHall: 'Назад в гостиную',
+    spot: { kitchen: 'Пройти на кухню', bath: 'Пройти в ванную', bedroom: 'Пройти в спальню' },
+    views: {
+      kitchen: { label: 'Кухня', title: 'Кухня', text: 'Три мягких светильника над длинным островом из травертина, дубовые шкафы и окно на озеро.', facts: ['Каменный остров', 'Три стула', 'Окно на озеро'] },
+      bath: { label: 'Ванная', title: 'Каменная ванная', text: 'Отдельностоящая ванна из травертина у самого стекла, тёплый свет и неспешные утра.', facts: ['Травертин', 'Глубокая ванна', 'Вид на озеро'] },
+      bedroom: { label: 'Спальня', title: 'Главная спальня', text: 'Просыпайтесь над туманом: всё озеро в окне прямо у кровати.', facts: ['Большая кровать', 'Лёгкие шторы', 'Сторона рассвета'] },
+    },
+  },
 };
-const FLY = {
-  w: 920, h: 945, px: 79,
-  wing: [[398, 380], [330, 415], [250, 515], [180, 615], [132, 720], [148, 795], [212, 805], [305, 742], [385, 652], [410, 560], [414, 455]],
-  hinge: [388, 405],
-  follow: 28, recoil: 20, turnV: 60, landAfter: 1.2, landUp: 3, landDown: 10,
-  hz: 34, hzCaught: 46, ghosts: 4, flap: .9, squash: .25,
-  catchR: 55, caughtMin: 3, caughtMax: 4.2, tremble: [47, 31], fling: 150,
-  cocoon: { strokes: 7, r: 30, fibres: 70 },
-  // Not given in the brief; values follow the original mechanic.
-  ghostAlpha: .32, recoilDecay: 1.4, turnRate: 12, trembleAmp: 1.3, cocoonFade: 2, fade: 6, strokeDelay: .14, strokeDraw: .45,
-};
-const SPIDER = {
-  gap: 560, gapNoFly: 330, vmax: 760, vGain: 4, ease: 10, turn: 8, edge: 10,
-  sway: .08, swayMax: .35, swayEase: 6,
-  introWait: 3, introWaitAgain: .8, introDrop: 2.3, introPow: 2.4, introLand: 1.3, introY: -760,
-  bounce: [14, 3.2, 6.5], swayX: [1.8, 8, .5],
-  stride: 130, frontStride: .7, stopStride: .3, overext: .98, groupBypass: 1.6, lead: .09,
-  stepBase: .15, stepSpeed: 3200, stepMin: .055, stepMax: .15,
-  kneeLift: 26, kneeLiftFront: 12, footLift: 20,
-  breathe: [3.2, 1.8, .025, .03], squash: [.1, 4],
-  shadow: [.42, .24, 500, 7, .14, 5, .35, 9, .6], liftScale: 260,
-  rest: { still: .25, speed: 25, up: 3.2, down: 6, fade: .15, blinkAfter: 1.5, blink: .2, blink2: .33, blinkMin: 3, blinkMax: 5 },
-  sleep: { after: 8, ramp: 1.6, tuck: .62, shrink: .03, wake: .6, hop: .3, hopH: 26 },
-  zed: { rise: 70, size: [12, 14], shade: .25 },
-  jump: { reach: 360, speed: 1100, min: .28, max: .6, hMin: 22, hK: .3, hMax: 130, spinMin: 16, spinMax: 28 },
-  // Not given in the brief; values follow the original mechanic.
-  nearlyStopped: 12, zedPeriod: 2.6, zedDrift: 26, zedBlur: 4, wakeRate: 2.5, tuckRate: 3, wobble: .05, jumpTurn: 14,
-};
-const SILK = {
-  segs: 12, damping: .975, gravity: 110, wind: [.45, .6, 1.3, 1.7, .4, .6, .4, 1.1, .012, 22], passes: 4,
-  sag: [1.01, 1.015], push: 36, liveThick: 1.25, step: 7,
-  attach: { near: 70, fromStart: 30, travel: 54, radial: 288, radialThick: .7, cross: 204, crossMin: 45, crossP: .75, crossThick: .85, buzz: [60, 1.2] },
-  free: 120, slideP: .35, max: 160,
-  halo: [.06, 4], strand: [.9, .35, .8], colour: 'rgba(255,255,255,0.75)',
-  irid: [190, 150, .12, .3, .3], fibre: [1.1, .9, .38, .45],
-  hair: { per: 3 / 1.1, touch: .4, len: [.5, 2.7], alpha: .55, width: .35 },
-  fluff: { p: .4, dust: 5, dustColour: '#8a7a6a', fibres: 10, fibreColour: 'rgba(240,232,220,.8)' },
-  dew: { per: 55, base: .4, r: [1.6, 6.2], sprite: 64 },
-  glint: .6, ageFade: 90, ageMin: .5, tufts: 30, bead: 3,
-  shadow: { colour: 'rgba(52,40,18,.36)', blur: 3.5, x: 7, y: 11 },
-  drops: { slope: 9, keep: .95, fall: 1100, splatAfter: 10, maxSplats: 400 },
-  clearFade: 2.6, footBuzz: [30, .6], landBuzz: [140, 2], jumpBuzz: [140, 3],
-  // Not given in the brief; values follow the original mechanic.
-  steep: .9, bigDrop: 5.2, bigDropP: .004, endPad: 2, shakeEnd: .25, clearShake: 7, glintLen: .07, tapGap: 300, tapNear: 40, dewEdge: .08,
-  hold: 650, holdBuzz: 30, holdSlop: 10, shadowRes: .5,
-};
-const NUDGE = { near: 260, speed: 40, torqueMax: 2.5, torqueK: 120, push: .85, damp: 2.8, angle: 24, offset: 50, spring: 8, stickAngle: 8, stickSpring: 20, settle: .3 };
-const ANCHOR = { textAlpha: 128, imgAlpha: 140, resampleMs: 600 };
 
-/* Embedded images (base64 WebP), inlined at build time */
-const ASSET = { sheet: '%SHEET%', spider: '%SPIDER%', head: '%HEAD%', fly: '%FLY%' };
+/* Embedded image (base64 WebP), inlined at build time */
+const ASSET = { sheet: '%SHEET%' };
